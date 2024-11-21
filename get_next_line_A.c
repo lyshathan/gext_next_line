@@ -1,48 +1,78 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_A.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ly-sha <ly-sha@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lthan <lthan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 12:28:48 by lthan             #+#    #+#             */
-/*   Updated: 2024/11/19 18:19:39 by ly-sha           ###   ########.fr       */
+/*   Updated: 2024/11/21 15:56:02 by lthan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*read_until_nl(char *buffer, char *memory, int fd, int *red)
+char	*ft_strjoin(char const *s1, char const *s2)
+{
+	size_t	len;
+	size_t	i;
+	size_t	j;
+	char	*str;
+
+	if (!s1)
+		return (ft_strdup(s2));
+	if (!s2)
+		return (NULL);
+	len = ft_strlen((char *)s1) + ft_strlen((char *)s2);
+	str = ft_calloc((len + 1), sizeof(char));
+	if (!str)
+		return (NULL);
+	i = -1;
+	while (s1[++i])
+		str[i] = s1[i];
+	j = 0;
+	while (s2[j])
+	{
+		str[i] = s2[j];
+		i++;
+		j++;
+	}
+	return (str);
+}
+
+char	*read_until_nl(char *memory, int fd)
 {
 	char	*temp;
+	char	*buffer;
+	int		red;
 
-	*red = BUFFER_SIZE;
-	while (*red == BUFFER_SIZE)
+	buffer = ft_calloc((BUFFER_SIZE + 1), sizeof(char));
+	if (!buffer)
+		return (NULL);
+	red = BUFFER_SIZE;
+	while (red == BUFFER_SIZE)
 	{
-		// printf("here\n");
-		temp = ft_strdup(memory);
-		// printf("temp = |%s|\n", temp);
-		free(memory);
-		memory = NULL;
-		*red = read(fd, buffer, BUFFER_SIZE);
-		// printf("buffer = |%s|\n", buffer);
-		buffer[BUFFER_SIZE] = 0;
-		memory = ft_strjoin(temp, buffer);
-		free(temp);
-		// printf("memory = |%s|\n", memory);
-		if (ft_strchr(buffer, '\n'))
+		red = read(fd, buffer, BUFFER_SIZE);
+		if (red < 0)
 		{
-			ft_bzero(buffer, BUFFER_SIZE);
-			break ;
+			free(buffer);
+			return (NULL);
 		}
+		temp = ft_strdup(memory);
+		if (memory)
+			free(memory);
+		memory = ft_strjoin(temp, buffer);
 		ft_bzero(buffer, BUFFER_SIZE);
+		if (temp)
+			free(temp);
+		if (ft_strchr(memory, '\n'))
+			break ;
 	}
 	return (memory);
 }
 
 char	*set_line(const char *memory)
 {
-	size_t	len;
 	size_t	i;
 	char	*line;
 
@@ -51,10 +81,9 @@ char	*set_line(const char *memory)
 		i++;
 	if (ft_strchr(memory, '\n'))
 		i++;
-//	printf("i = %zu\n", i);
 	line = calloc(i + 1, sizeof(char));
 	if (!line)
-		return (NULL);						//Have to free anything?
+		return (NULL);
 	i = 0;
 	while (memory[i] && memory[i] != '\n')
 	{
@@ -68,7 +97,7 @@ char	*set_line(const char *memory)
 
 char	*reset_memory(char *memory)
 {
-	char 	*temp;
+	char	*temp;
 	size_t	i;
 	size_t	j;
 
@@ -77,7 +106,7 @@ char	*reset_memory(char *memory)
 		i++;
 	if (ft_strchr(memory, '\n'))
 		i++;
-	temp = calloc((ft_strlen(memory) - i + 1), sizeof(char));
+	temp = ft_calloc((ft_strlen(memory) - i + 1), sizeof(char));
 	if (!temp)
 	{
 		free(memory);
@@ -94,27 +123,33 @@ char	*reset_memory(char *memory)
 
 char	*get_next_line(int fd)
 {
-	static char *memory;
-	char		*buffer;
+	static char	*memory;
 	char		*line;
-	int		red;
 
-	if (fd <= 0 || BUFFER_SIZE <= 0)
-		return (NULL);
-	line = NULL;
-	buffer = ft_calloc((BUFFER_SIZE + 1), sizeof(char));
-	if (!buffer)
-		return (NULL);
-	memory = read_until_nl(buffer, memory, fd, &red);
-//	printf("RED = %d\n", red);
-	if (red == 0 && !*memory)
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 	{
 		free(memory);
+		memory = NULL;
 		return (NULL);
 	}
-//	printf("memory = |%s|\n", memory);
+	if (memory && !*memory)
+	{
+		if (memory)
+		{
+			free(memory);
+			memory = NULL;
+		}
+		return (NULL);
+	}
+	memory = read_until_nl(memory, fd);
+	if (!ft_strchr(memory, '\n'))
+	{
+		line = ft_strdup(memory);
+		free(memory);
+		memory = NULL;
+		return (line);
+	}
 	line = set_line(memory);
 	memory = reset_memory(memory);
-//	printf("reset memory = |%s|\n", memory);
 	return (line);
 }

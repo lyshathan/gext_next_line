@@ -6,7 +6,7 @@
 /*   By: lthan <lthan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 12:32:40 by lthan             #+#    #+#             */
-/*   Updated: 2024/11/19 14:54:48 by lthan            ###   ########.fr       */
+/*   Updated: 2024/11/21 10:44:21 by lthan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,16 @@ int	main (int arc, char **arv)
 		free(line);
 		i++;
 	}
+
+	line = get_next_line(fd);
+	printf("line %d ------> ||%s||\n\n", i++, line);
+	if (line)
+		free(line);
+
 	// line = get_next_line(fd);
-	// printf("line %d ------> ||%s||\n\n", i, line);
-	// free(line);
+	// printf("line %d ------> ||%s||\n\n", i++, line);
+	// if (line)
+	// 	free(line);
 
 	close(fd);
 	return (0);
