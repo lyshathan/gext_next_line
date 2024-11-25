@@ -23,6 +23,7 @@ char	*join_and_free(char *memory, char *buffer)
 		res = ft_strdup(buffer);
 		return (res);
 	}
+
 	if (!buffer)
 		return (NULL);
 	size_t len  = ft_strlen(memory) + ft_strlen(buffer);
@@ -33,15 +34,18 @@ char	*join_and_free(char *memory, char *buffer)
 		free(memory);
 		// printf(GREEN"Free alloc at %p		--> memory in join_and_free\n"RESET, memory);
 		memory = NULL;
+		return (NULL);
 	}
+
 	i = 0;
-	while (memory[i])
+	while (memory && memory[i])
 	{
 		res[i] = memory[i];
 		i++;
 	}
+
 	j = 0;
-	while (buffer[j])
+	while (buffer && buffer[j])
 	{
 		res[i] = buffer[j];
 		i++;
@@ -55,23 +59,32 @@ char	*join_and_free(char *memory, char *buffer)
 
 char	*read_until_nl(int fd, char *memory)
 {
-	char	buffer[BUFFER_SIZE + 1];
+	char* 	buffer;
 	int		red;
 
-	printf ("HELLO\n");
-	ft_bzero(buffer, BUFFER_SIZE);
+	buffer = ft_calloc((BUFFER_SIZE + 1), sizeof(char));
 	red = BUFFER_SIZE;
 	while (red > 0)
 	{
 		red = read(fd, buffer, BUFFER_SIZE);
 		if (red <= 0)
-			return (memory);
+		{
+			free(buffer);
+			buffer = NULL;
+			return memory;
+		}
+
 		// printf("buffer = |%s|\n", buffer)
 		memory = join_and_free(memory, buffer);
+
 		ft_bzero(buffer, BUFFER_SIZE);
-		if (ft_strchr(memory, '\n'))
-			break ;
+		// printf("%s\n", memory);
+		if (ft_strchr(memory, '\n')) {
+			break;
+		}
 	}
+	free(buffer);
+	buffer = NULL;
 	return (memory);
 }
 
@@ -111,11 +124,14 @@ char	*reset_memory(char *memory)
 	size_t	i;
 
 	temp = ft_strchr(memory, '\n');
+	if (!temp) {
+		return NULL;
+	}
 	temp++;
 	if (!*temp)
 	{
 		free(memory);
-		// printf(GREEN"Free alloc at %p		--> memory in reset_memory\n"RESET, memory);
+		// printf("Free alloc at %p		--> memory in reset_memory\n", memory);
 		memory = NULL;
 		return (memory);
 	}
@@ -148,11 +164,16 @@ char	*get_next_line(int fd)
 
 	line = NULL;
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
-		return (NULL);
+	{
+		free(memory);
+		memory = NULL;
+		return memory;
+	}
 	memory = read_until_nl(fd, memory);
 	// printf("> Memory = |%s|\n", memory);
-	if (!memory)
-		return (NULL);
+	if (!memory) {
+		return memory;
+	}
 	if (!ft_strchr(memory, '\n'))
 	{
 		line = ft_strdup(memory);

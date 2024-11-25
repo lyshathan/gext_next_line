@@ -15,6 +15,7 @@
 
 int	main (int arc, char **arv)
 {
+	printf("coucou");
 	(void)arc;
 	char	*filename = arv[1];
 	char	*line = NULL;
@@ -26,19 +27,19 @@ int	main (int arc, char **arv)
 	int i = 1;
 	while ((line = get_next_line(fd)) && i < 10)
 	{
-		printf(BLUE"line %d ------> ||%s||\n"RESET, i, line);
+		printf("line %d ------> ||%s||\n", i, line);
 		free(line);
-		printf(GREEN"Free alloc at %p		--> line in main\n"RESET, line);
+		printf("Free alloc at %p		--> line in main\n", line);
 		i++;
 		printf("\n=========================\n");
 	}
 
 	line = get_next_line(fd);
-	printf(BLUE"line %d ------> ||%s||\n"RESET, i, line);
+	printf("line %d ------> ||%s||\n", i, line);
 	if (line)
 	{
 		free(line);
-		printf(GREEN"Free alloc at %p		--> line in main\n"RESET, line);
+		printf("Free alloc at %p		--> line in main\n", line);
 	}
 
 	// line = get_next_line(fd);
