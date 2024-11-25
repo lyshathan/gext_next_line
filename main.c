@@ -6,7 +6,7 @@
 /*   By: lthan <lthan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 12:32:40 by lthan             #+#    #+#             */
-/*   Updated: 2024/11/21 10:44:21 by lthan            ###   ########.fr       */
+/*   Updated: 2024/11/25 14:21:39 by lthan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,20 @@ int	main (int arc, char **arv)
 	int i = 1;
 	while ((line = get_next_line(fd)) && i < 10)
 	{
-		printf("line %d ------> ||%s||\n\n", i, line);
+		printf(BLUE"line %d ------> ||%s||\n"RESET, i, line);
 		free(line);
+		printf(GREEN"Free alloc at %p		--> line in main\n"RESET, line);
 		i++;
+		printf("\n=========================\n");
 	}
 
 	line = get_next_line(fd);
-	printf("line %d ------> ||%s||\n\n", i++, line);
+	printf(BLUE"line %d ------> ||%s||\n"RESET, i, line);
 	if (line)
+	{
 		free(line);
+		printf(GREEN"Free alloc at %p		--> line in main\n"RESET, line);
+	}
 
 	// line = get_next_line(fd);
 	// printf("line %d ------> ||%s||\n\n", i++, line);

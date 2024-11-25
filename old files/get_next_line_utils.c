@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: lthan <lthan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/25 10:41:01 by lthan             #+#    #+#             */
-/*   Updated: 2024/11/25 15:33:06 by lthan            ###   ########.fr       */
+/*   Created: 2024/11/19 12:28:46 by lthan             #+#    #+#             */
+/*   Updated: 2024/11/21 11:04:12 by lthan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@ size_t	ft_strlen(const char *s)
 {
 	size_t	i;
 
-	// if (!s)
-	// 	return (0);
 	i = 0;
 	while (s[i])
 	{
@@ -54,7 +52,6 @@ char	*ft_strdup(const char *s)
 		return (NULL);
 	len = ft_strlen((char *)s);
 	str = malloc ((len + 1) * sizeof(char));
-	// printf(RED"Mem alloc at %p		--> in ft_strdup\n"RESET, str);
 	if (!str)
 		return (NULL);
 	i = 0;
