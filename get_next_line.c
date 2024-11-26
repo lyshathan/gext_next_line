@@ -6,7 +6,7 @@
 /*   By: lthan <lthan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 10:40:58 by lthan             #+#    #+#             */
-/*   Updated: 2024/11/25 15:57:32 by lthan            ###   ########.fr       */
+/*   Updated: 2024/11/26 08:47:29 by lthan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,59 +19,46 @@ char	*join_and_free(char *memory, char *buffer)
 	size_t	j;
 
 	if (!memory)
-	{
-		res = ft_strdup(buffer);
-		return (res);
-	}
+		return (ft_strdup(buffer));
 	if (!buffer)
 		return (NULL);
-	size_t len  = ft_strlen(memory) + ft_strlen(buffer);
-	res = ft_calloc((len + 1), sizeof(char));
-	// printf(RED"Mem alloc at %p		--> res in join_and_free\n"RESET, res);
+	res = ft_calloc((ft_strlen(memory) + ft_strlen(buffer) + 1), sizeof(char));
 	if (!res)
-	{
-		free(memory);
-		// printf(GREEN"Free alloc at %p		--> memory in join_and_free\n"RESET, memory);
-		memory = NULL;
-	}
-	i = 0;
-	while (memory[i])
-	{
+		return (free(memory), memory = NULL, NULL);
+	i = -1;
+	while (memory[++i])
 		res[i] = memory[i];
-		i++;
-	}
 	j = 0;
-	while (buffer[j])
-	{
-		res[i] = buffer[j];
-		i++;
-		j++;
-	}
+	while (buffer && buffer[j])
+		res[i++] = buffer[j++];
 	free (memory);
-	// printf(GREEN"Free alloc at %p		--> memory in join_and_free\n"RESET, memory);
 	memory = NULL;
 	return (res);
 }
 
 char	*read_until_nl(int fd, char *memory)
 {
-	char	buffer[BUFFER_SIZE + 1];
+	char	*buffer;
 	int		red;
 
-	printf ("HELLO\n");
-	ft_bzero(buffer, BUFFER_SIZE);
+	buffer = ft_calloc((BUFFER_SIZE + 1), sizeof(char));
 	red = BUFFER_SIZE;
 	while (red > 0)
 	{
 		red = read(fd, buffer, BUFFER_SIZE);
 		if (red <= 0)
+		{
+			free(buffer);
+			buffer = NULL;
 			return (memory);
-		// printf("buffer = |%s|\n", buffer)
+		}
 		memory = join_and_free(memory, buffer);
 		ft_bzero(buffer, BUFFER_SIZE);
 		if (ft_strchr(memory, '\n'))
 			break ;
 	}
+	free(buffer);
+	buffer = NULL;
 	return (memory);
 }
 
@@ -86,11 +73,9 @@ char	*set_line(char *memory)
 	if (memory[i] == '\n')
 		i++;
 	line = ft_calloc((i + 1), sizeof(char));
-	// printf(RED"Mem alloc at %p		--> line in set_line\n"RESET, line);
 	if (!line)
 	{
 		free(memory);
-		// printf(GREEN"Free alloc at %p		--> memory in set_line (error)\n"RESET, memory);
 		memory = NULL;
 		return (NULL);
 	}
@@ -104,6 +89,7 @@ char	*set_line(char *memory)
 		line[i] = '\n';
 	return (line);
 }
+
 char	*reset_memory(char *memory)
 {
 	char	*res;
@@ -111,24 +97,14 @@ char	*reset_memory(char *memory)
 	size_t	i;
 
 	temp = ft_strchr(memory, '\n');
+	if (!temp)
+		return (NULL);
 	temp++;
 	if (!*temp)
-	{
-		free(memory);
-		// printf(GREEN"Free alloc at %p		--> memory in reset_memory\n"RESET, memory);
-		memory = NULL;
-		return (memory);
-	}
-	// printf("temp = |%s|	--> len = %zu\n", temp, ft_strlen(temp));
+		return (free(memory), memory = NULL, memory);
 	res = ft_calloc((ft_strlen(temp) + 1), sizeof(char));
-	// printf(RED"Mem alloc at %p		--> res in reset_memory\n"RESET, res);
 	if (!res)
-	{
-		free(memory);
-		// printf(GREEN"Free alloc at %p\n"RESET, memory);
-		memory = NULL;
-		return (NULL);
-	}
+		return (free(memory), memory = NULL, NULL);
 	i = 0;
 	while (temp[i])
 	{
@@ -136,7 +112,6 @@ char	*reset_memory(char *memory)
 		i++;
 	}
 	free (memory);
-	// printf(GREEN"Free alloc at %p		--> memory in reset_memory\n"RESET, memory);
 	memory = NULL;
 	return (res);
 }
@@ -148,22 +123,22 @@ char	*get_next_line(int fd)
 
 	line = NULL;
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
-		return (NULL);
+	{
+		free(memory);
+		memory = NULL;
+		return (memory);
+	}
 	memory = read_until_nl(fd, memory);
-	// printf("> Memory = |%s|\n", memory);
 	if (!memory)
-		return (NULL);
+		return (memory);
 	if (!ft_strchr(memory, '\n'))
 	{
 		line = ft_strdup(memory);
 		free(memory);
-		// printf(GREEN"Free alloc at %p		--> memory in get_next_line(no nl in memory)\n"RESET, memory);
 		memory = NULL;
 		return (line);
 	}
 	line = set_line(memory);
-	// printf("> Line = |%s|\n", line);
 	memory = reset_memory(memory);
-	// printf("memory END = |%s|\n", memory);
 	return (line);
 }

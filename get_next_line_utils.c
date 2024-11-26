@@ -6,7 +6,7 @@
 /*   By: lthan <lthan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 10:41:01 by lthan             #+#    #+#             */
-/*   Updated: 2024/11/25 15:33:06 by lthan            ###   ########.fr       */
+/*   Updated: 2024/11/26 08:32:57 by lthan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@ size_t	ft_strlen(const char *s)
 {
 	size_t	i;
 
-	// if (!s)
-	// 	return (0);
 	i = 0;
 	while (s[i])
 	{
@@ -54,7 +52,6 @@ char	*ft_strdup(const char *s)
 		return (NULL);
 	len = ft_strlen((char *)s);
 	str = malloc ((len + 1) * sizeof(char));
-	// printf(RED"Mem alloc at %p		--> in ft_strdup\n"RESET, str);
 	if (!str)
 		return (NULL);
 	i = 0;
