@@ -2,3 +2,4 @@ main.c
 get_next_line_commented.c
 files/
 a.out
+.vscode
