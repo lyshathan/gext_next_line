@@ -6,7 +6,7 @@
 /*   By: lthan <lthan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 10:41:01 by lthan             #+#    #+#             */
-/*   Updated: 2024/11/26 08:32:57 by lthan            ###   ########.fr       */
+/*   Updated: 2024/11/27 13:44:46 by lthan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ size_t	ft_strlen(const char *s)
 {
 	size_t	i;
 
+	if (!s)
+		return (0);
 	i = 0;
 	while (s[i])
 	{
@@ -77,16 +79,10 @@ void	ft_bzero(void *s, size_t n)
 	return ;
 }
 
-void	*ft_calloc(size_t nmemb, size_t size)
+void	*safe_free(void	*ptr)
 {
-	char	*ptr;
-
-	if ((size != 0 && nmemb > SIZE_MAX / size)
-		|| (nmemb != 0 && size > SIZE_MAX / nmemb))
-		return (NULL);
-	ptr = malloc(nmemb * size);
-	if (!ptr)
-		return (NULL);
-	ft_bzero(ptr, nmemb * size);
+	if (ptr)
+		free(ptr);
+	ptr = NULL;
 	return (ptr);
 }

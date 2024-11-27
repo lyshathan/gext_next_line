@@ -6,7 +6,7 @@
 /*   By: lthan <lthan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 12:28:44 by lthan             #+#    #+#             */
-/*   Updated: 2024/11/27 10:01:42 by lthan            ###   ########.fr       */
+/*   Updated: 2024/11/27 12:48:30 by lthan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ size_t	ft_strlen(const char *s);
 char	*ft_strchr(const char *s, int c);
 char	*ft_strdup(const char *s);
 void	ft_bzero(void *s, size_t n);
-void	*ft_calloc(size_t nmemb, size_t size);
+void	*safe_free(void	*ptr);
+// void	*ft_calloc(size_t nmemb, size_t size);
 
 #endif

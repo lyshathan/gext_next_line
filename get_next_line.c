@@ -6,7 +6,7 @@
 /*   By: lthan <lthan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 10:40:58 by lthan             #+#    #+#             */
-/*   Updated: 2024/11/27 10:01:31 by lthan            ###   ########.fr       */
+/*   Updated: 2024/11/27 14:23:06 by lthan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,11 @@ char	*join_and_free(char *memory, char *buffer)
 	if (!memory)
 		return (ft_strdup(buffer));
 	if (!buffer)
-		return (NULL);
-	res = ft_calloc((ft_strlen(memory) + ft_strlen(buffer) + 1), sizeof(char));
+		return (safe_free(memory));
+	res = malloc((ft_strlen(memory) + ft_strlen(buffer) + 1) * sizeof(char));
 	if (!res)
-		return (free(memory), memory = NULL, NULL);
+		return (safe_free(memory));
+	res[ft_strlen(memory) + ft_strlen(buffer)] = 0;
 	i = -1;
 	while (memory[++i])
 		res[i] = memory[i];
@@ -39,28 +40,29 @@ char	*join_and_free(char *memory, char *buffer)
 char	*read_until_nl(int fd, char *memory)
 {
 	char	*buffer;
-	int		red;
+	int		bytes_read;
 
-	buffer = ft_calloc((BUFFER_SIZE + 1), sizeof(char));
-	red = BUFFER_SIZE;
-	while (red > 0)
+	buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (!buffer)
+		return (safe_free(memory));
+	bytes_read = BUFFER_SIZE;
+	while (bytes_read > 0)
 	{
-		red = read(fd, buffer, BUFFER_SIZE);
-		if (red < 0)
+		ft_bzero(buffer, BUFFER_SIZE + 1);
+		bytes_read = read(fd, buffer, BUFFER_SIZE);
+		if (bytes_read <= 0)
 		{
-			if (memory)
-				free(memory);
-			return (free(buffer), buffer = NULL, memory = NULL, NULL);
+			free(buffer);
+			if (bytes_read < 0)
+				return (safe_free(memory));
+			else if (bytes_read == 0)
+				return (memory);
 		}
-		if (red == 0)
-			return (free(buffer), buffer = NULL, memory);
 		memory = join_and_free(memory, buffer);
-		ft_bzero(buffer, BUFFER_SIZE);
 		if (ft_strchr(memory, '\n'))
 			break ;
 	}
 	free(buffer);
-	buffer = NULL;
 	return (memory);
 }
 
@@ -74,13 +76,10 @@ char	*set_line(char *memory)
 		i++;
 	if (memory[i] == '\n')
 		i++;
-	line = ft_calloc((i + 1), sizeof(char));
+	line = malloc((i + 1) * sizeof(char));
 	if (!line)
-	{
-		free(memory);
-		memory = NULL;
-		return (NULL);
-	}
+		return (safe_free(memory));
+	line[i] = 0;
 	i = 0;
 	while (memory[i] && memory[i] != '\n')
 	{
@@ -103,10 +102,11 @@ char	*reset_memory(char *memory)
 		return (NULL);
 	temp++;
 	if (!*temp)
-		return (free(memory), memory = NULL, memory);
-	res = ft_calloc((ft_strlen(temp) + 1), sizeof(char));
+		return (safe_free(memory));
+	res = malloc((ft_strlen(temp) + 1) * sizeof(char));
 	if (!res)
-		return (free(memory), memory = NULL, NULL);
+		return (safe_free(memory));
+	res[ft_strlen(temp)] = 0;
 	i = 0;
 	while (temp[i])
 	{
@@ -125,10 +125,15 @@ char	*get_next_line(int fd)
 
 	line = NULL;
 	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (free(memory), memory = NULL, NULL);
+	{
+		if (memory)
+			free(memory);
+		memory = NULL;
+		return (memory);
+	}
 	memory = read_until_nl(fd, memory);
 	if (!memory)
-		return (memory = NULL, memory);
+		return (NULL);
 	if (!ft_strchr(memory, '\n'))
 	{
 		line = ft_strdup(memory);
