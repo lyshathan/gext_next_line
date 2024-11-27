@@ -6,7 +6,7 @@
 /*   By: lthan <lthan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 12:28:44 by lthan             #+#    #+#             */
-/*   Updated: 2024/11/26 08:16:58 by lthan            ###   ########.fr       */
+/*   Updated: 2024/11/27 10:01:42 by lthan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,11 @@
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 10000000
+#  define BUFFER_SIZE 42
 # endif
-
-// #define RED     "\033[1;31m"
-// #define GREEN   "\033[1;32m"
-// #define YELLOW  "\033[1;33m"
-// #define BLUE    "\033[1;34m"
-// #define RESET   "\033[0m"
 
 # include <stdlib.h>
 # include <unistd.h>
-# include <stdio.h>
 # include <stdint.h>
 
 char	*get_next_line(int fd);

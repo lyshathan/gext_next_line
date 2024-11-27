@@ -6,7 +6,7 @@
 /*   By: lthan <lthan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 10:40:58 by lthan             #+#    #+#             */
-/*   Updated: 2024/11/26 08:47:29 by lthan            ###   ########.fr       */
+/*   Updated: 2024/11/27 10:01:31 by lthan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,14 @@ char	*read_until_nl(int fd, char *memory)
 	while (red > 0)
 	{
 		red = read(fd, buffer, BUFFER_SIZE);
-		if (red <= 0)
+		if (red < 0)
 		{
-			free(buffer);
-			buffer = NULL;
-			return (memory);
+			if (memory)
+				free(memory);
+			return (free(buffer), buffer = NULL, memory = NULL, NULL);
 		}
+		if (red == 0)
+			return (free(buffer), buffer = NULL, memory);
 		memory = join_and_free(memory, buffer);
 		ft_bzero(buffer, BUFFER_SIZE);
 		if (ft_strchr(memory, '\n'))
@@ -122,15 +124,11 @@ char	*get_next_line(int fd)
 	char		*line;
 
 	line = NULL;
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
-	{
-		free(memory);
-		memory = NULL;
-		return (memory);
-	}
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (free(memory), memory = NULL, NULL);
 	memory = read_until_nl(fd, memory);
 	if (!memory)
-		return (memory);
+		return (memory = NULL, memory);
 	if (!ft_strchr(memory, '\n'))
 	{
 		line = ft_strdup(memory);
