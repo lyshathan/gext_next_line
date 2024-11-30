@@ -6,12 +6,11 @@
 /*   By: ly-sha <ly-sha@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 09:44:59 by ly-sha            #+#    #+#             */
-/*   Updated: 2024/11/30 20:50:40 by ly-sha           ###   ########.fr       */
+/*   Updated: 2024/11/30 21:03:50 by ly-sha           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
 
 size_t	ft_strlen_c(const char *s, char c)
 {
