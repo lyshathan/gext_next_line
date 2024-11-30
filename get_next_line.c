@@ -6,7 +6,7 @@
 /*   By: ly-sha <ly-sha@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 09:44:56 by ly-sha            #+#    #+#             */
-/*   Updated: 2024/11/30 20:13:25 by ly-sha           ###   ########.fr       */
+/*   Updated: 2024/11/30 20:58:22 by ly-sha           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,11 @@ char	*read_file(int fd, char *memory, char *line)
 		}
 		memory[bytes_read] = 0;
 		line = join_until(line, memory, '\n');
+		if (!line)
+		{
+			ft_bzero(memory, BUFFER_SIZE + 1);
+			return (NULL);
+		}
 		if (ft_strchr(memory, '\n'))
 			break ;
 	}
