@@ -6,7 +6,7 @@
 /*   By: ly-sha <ly-sha@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 09:44:56 by ly-sha            #+#    #+#             */
-/*   Updated: 2024/11/28 18:20:18 by ly-sha           ###   ########.fr       */
+/*   Updated: 2024/11/30 20:13:25 by ly-sha           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ char	*join_until(char *line, char *memory, char c)
 	j = 0;
 	while (memory[j] && memory[j] != c)
 		res[i++] = memory[j++];
-	if (ft_strchr(memory, '\n'))
+	if (memory[j] == '\n')
 		res[i] = '\n';
 	safe_free(line);
 	return (res);
@@ -56,7 +56,7 @@ char	*read_file(int fd, char *memory, char *line)
 		}
 		memory[bytes_read] = 0;
 		line = join_until(line, memory, '\n');
-		if (ft_strchr(line, '\n'))
+		if (ft_strchr(memory, '\n'))
 			break ;
 	}
 	return (line);
@@ -92,7 +92,7 @@ char	*get_next_line(int fd)
 		return (NULL);
 	if (*memory)
 		line = join_until(line, memory, '\n');
-	if (ft_strchr(line, '\n'))
+	if (ft_strchr(memory, '\n'))
 	{
 		reset_memory(memory);
 		return (line);
@@ -100,7 +100,7 @@ char	*get_next_line(int fd)
 	line = read_file(fd, memory, line);
 	if (!line || !*line)
 		return (safe_free(line));
-	if (!ft_strchr(line, '\n'))
+	if (!ft_strchr(memory, '\n'))
 	{
 		ft_bzero(memory, BUFFER_SIZE + 1);
 		return (line);
