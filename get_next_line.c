@@ -6,21 +6,21 @@
 /*   By: ly-sha <ly-sha@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 09:44:56 by ly-sha            #+#    #+#             */
-/*   Updated: 2024/11/30 20:58:22 by ly-sha           ###   ########.fr       */
+/*   Updated: 2024/12/01 16:40:05 by ly-sha           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*join_until(char *line, char *memory, char c)
+char	*join_until(char *line, char *buffer, char c)
 {
 	char	*res;
 	size_t	i;
 	size_t	j;
 	size_t	len;
 
-	len = ft_strlen_c(line, 0) + ft_strlen_c(memory, c);
-	if (ft_strchr(memory, '\n'))
+	len = ft_strlen_c(line, 0) + ft_strlen_c(buffer, c);
+	if (ft_strchr(buffer, '\n'))
 		len++;
 	res = malloc((len + 1) * sizeof(char));
 	if (!res)
@@ -33,83 +33,82 @@ char	*join_until(char *line, char *memory, char c)
 		i++;
 	}
 	j = 0;
-	while (memory[j] && memory[j] != c)
-		res[i++] = memory[j++];
-	if (memory[j] == '\n')
+	while (buffer[j] && buffer[j] != c)
+		res[i++] = buffer[j++];
+	if (buffer[j] == '\n')
 		res[i] = '\n';
 	safe_free(line);
 	return (res);
 }
 
-char	*read_file(int fd, char *memory, char *line)
+char	*read_file(int fd, char *buffer, char *line)
 {
 	int	bytes_read;
 
 	bytes_read = BUFFER_SIZE;
 	while (bytes_read > 0)
 	{
-		bytes_read = read(fd, memory, BUFFER_SIZE);
+		bytes_read = read(fd, buffer, BUFFER_SIZE);
 		if (bytes_read < 0)
 		{
-			ft_bzero(memory, BUFFER_SIZE + 1);
+			ft_bzero(buffer, BUFFER_SIZE + 1);
 			return (safe_free(line));
 		}
-		memory[bytes_read] = 0;
-		line = join_until(line, memory, '\n');
+		buffer[bytes_read] = 0;
+		line = join_until(line, buffer, '\n');
 		if (!line)
-		{
-			ft_bzero(memory, BUFFER_SIZE + 1);
-			return (NULL);
-		}
-		if (ft_strchr(memory, '\n'))
+			return (ft_bzero(buffer, BUFFER_SIZE + 1));
+		if (ft_strchr(buffer, '\n'))
 			break ;
 	}
 	return (line);
 }
 
-void	reset_memory(char *memory)
+void	reset_buffer(char *buffer)
 {
 	size_t	i;
 	size_t	j;
 
 	i = 0;
-	while (memory[i] && memory[i] != '\n')
+	while (buffer[i] && buffer[i] != '\n')
 		i++;
-	if (memory[i] == '\n')
+	if (buffer[i] == '\n')
 		i++;
 	j = 0;
-	while (memory[i])
+	while (buffer[i])
 	{
-		memory[j] = memory[i];
+		buffer[j] = buffer[i];
 		i++;
 		j++;
 	}
-	memory[j] = 0;
+	buffer[j] = 0;
 }
 
 char	*get_next_line(int fd)
 {
-	static char	memory[BUFFER_SIZE + 1];
+	static char	buffer[BUFFER_SIZE + 1];
 	char		*line;
 
 	line = NULL;
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	if (*memory)
-		line = join_until(line, memory, '\n');
-	if (ft_strchr(memory, '\n'))
+	if (*buffer)
+		line = join_until(line, buffer, '\n');
+	if (*buffer && !line)
+		return (ft_bzero(buffer, BUFFER_SIZE + 1));
+	if (ft_strchr(buffer, '\n'))
 	{
-		reset_memory(memory);
+		reset_buffer(buffer);
 		return (line);
 	}
-	line = read_file(fd, memory, line);
+	line = read_file(fd, buffer, line);
 	if (!line || !*line)
 		return (safe_free(line));
-	if (!ft_strchr(memory, '\n'))
+	if (!ft_strchr(buffer, '\n'))
 	{
-		ft_bzero(memory, BUFFER_SIZE + 1);
+		ft_bzero(buffer, BUFFER_SIZE + 1);
 		return (line);
 	}
-	reset_memory(memory);
+	reset_buffer(buffer);
 	return (line);
 }

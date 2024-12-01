@@ -6,7 +6,7 @@
 /*   By: ly-sha <ly-sha@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 09:44:59 by ly-sha            #+#    #+#             */
-/*   Updated: 2024/11/30 21:03:50 by ly-sha           ###   ########.fr       */
+/*   Updated: 2024/12/01 16:30:09 by ly-sha           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
-void	ft_bzero(void *s, size_t n)
+void	*ft_bzero(void *s, size_t n)
 {
 	size_t	i;
 
@@ -52,7 +52,7 @@ void	ft_bzero(void *s, size_t n)
 		((unsigned char *)s)[i] = 0;
 		i++;
 	}
-	return ;
+	return (NULL);
 }
 
 void	*safe_free(void *ptr)

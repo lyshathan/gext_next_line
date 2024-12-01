@@ -6,7 +6,7 @@
 /*   By: ly-sha <ly-sha@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 09:45:02 by ly-sha            #+#    #+#             */
-/*   Updated: 2024/11/30 21:04:08 by ly-sha           ###   ########.fr       */
+/*   Updated: 2024/12/01 16:30:17 by ly-sha           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 char	*get_next_line(int fd);
 size_t	ft_strlen_c(const char *s, char c);
 char	*ft_strchr(const char *s, int c);
-void	ft_bzero(void *s, size_t n);
+void	*ft_bzero(void *s, size_t n);
 void	*safe_free(void *ptr);
 
 #endif
